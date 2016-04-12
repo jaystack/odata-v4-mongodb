@@ -1,0 +1,37 @@
+import { Token } from 'odata-v4-parser/lib/lexer';
+export declare class Visitor {
+    query: any;
+    sort: any;
+    skip: number;
+    limit: number;
+    projection: any;
+    collection: string;
+    ast: Token;
+    constructor();
+    Visit(node: Token, context?: any): this;
+    private VisitODataUri(node, context);
+    private VisitEntitySetName(node, context);
+    private VisitQueryOptions(node, context);
+    private VisitFilter(node, context);
+    private VisitOrderBy(node, context);
+    private VisitSkip(node, context);
+    private VisitTop(node, context);
+    private VisitOrderByItem(node, context);
+    private VisitSelect(node, context);
+    private VisitSelectItem(node, context);
+    private VisitAndExpression(node, context);
+    private VisitOrExpression(node, context);
+    private VisitBoolParenExpression(node, context);
+    private VisitCommonExpression(node, context);
+    private VisitFirstMemberExpression(node, context);
+    private VisitMemberExpression(node, context);
+    private VisitPropertyPathExpression(node, context);
+    private VisitODataIdentifier(node, context);
+    private VisitEqualsExpression(node, context);
+    private VisitNotEqualsExpression(node, context);
+    private VisitLesserThanExpression(node, context);
+    private VisitLesserOrEqualsExpression(node, context);
+    private VisitGreaterThanExpression(node, context);
+    private VisitGreaterOrEqualsExpression(node, context);
+    private VisitLiteral(node, context);
+}
