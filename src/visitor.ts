@@ -75,7 +75,7 @@ export class Visitor{
 	}
 
 	private VisitSelect(node:Token, context:any){
-		context.fields = {};
+		context.projection = {};
 		node.value.items.forEach((item) => this.Visit(item, context));
 
 		this.projection = context.projection;
