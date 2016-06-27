@@ -1,4 +1,5 @@
-import { Token } from 'odata-v4-parser/lib/lexer'
+import { Token } from "odata-v4-parser/lib/lexer";
+import { Literal } from "odata-v4-literal";
 
 export class Visitor{
 	query: any
@@ -28,16 +29,16 @@ export class Visitor{
 		return this;
 	}
 
-	private VisitODataUri(node:Token, context:any){
+	protected VisitODataUri(node:Token, context:any){
 		this.Visit(node.value.resource, context);
 		this.Visit(node.value.query, context);
 	}
 
-	private VisitEntitySetName(node:Token, context:any){
+	protected VisitEntitySetName(node:Token, context:any){
 		this.collection = node.value.name;
 	}
 
-	private VisitQueryOptions(node:Token, context:any){
+	protected VisitQueryOptions(node:Token, context:any){
 		var self = this;
 
 		context.options = {};
@@ -50,31 +51,31 @@ export class Visitor{
 		delete context.sort;
 	}
 
-	private VisitFilter(node:Token, context:any){
+	protected VisitFilter(node:Token, context:any){
 		context.query = {};
 		this.Visit(node.value, context);
 	}
 
-	private VisitOrderBy(node:Token, context:any){
+	protected VisitOrderBy(node:Token, context:any){
 		context.sort = {};
 		node.value.items.forEach((item) => this.Visit(item, context));
 	}
 
-	private VisitSkip(node:Token, context:any){
+	protected VisitSkip(node:Token, context:any){
 		this.skip = +node.value.raw;
 	}
 
-	private VisitTop(node:Token, context:any){
+	protected VisitTop(node:Token, context:any){
 		this.limit = +node.value.raw;
 	}
 
-	private VisitOrderByItem(node:Token, context:any){
+	protected VisitOrderByItem(node:Token, context:any){
 		this.Visit(node.value.expr, context);
 		context.sort[context.identifier] = node.value.direction;
 		delete context.identifier;
 	}
 
-	private VisitSelect(node:Token, context:any){
+	protected VisitSelect(node:Token, context:any){
 		context.projection = {};
 		node.value.items.forEach((item) => this.Visit(item, context));
 
@@ -82,11 +83,11 @@ export class Visitor{
 		delete context.projection;
 	}
 
-	private VisitSelectItem(node:Token, context:any){
+	protected VisitSelectItem(node:Token, context:any){
 		context.projection[node.raw.replace(/\//g, '.')] = 1;
 	}
 
-	private VisitAndExpression(node:Token, context:any){
+	protected VisitAndExpression(node:Token, context:any){
 		var query = context.query;
 		var leftQuery = {};
 		context.query = leftQuery;
@@ -100,7 +101,7 @@ export class Visitor{
 		context.query = query;
 	}
 
-	private VisitOrExpression(node:Token, context:any){
+	protected VisitOrExpression(node:Token, context:any){
 		var query = context.query;
 		var leftQuery = {};
 		context.query = leftQuery;
@@ -114,32 +115,32 @@ export class Visitor{
 		context.query = query;
 	}
 
-	private VisitBoolParenExpression(node:Token, context:any){
+	protected VisitBoolParenExpression(node:Token, context:any){
 		this.Visit(node.value, context);
 	}
 
-	private VisitCommonExpression(node:Token, context:any){
+	protected VisitCommonExpression(node:Token, context:any){
 		this.Visit(node.value, context);
 	}
 
-	private VisitFirstMemberExpression(node:Token, context:any){
+	protected VisitFirstMemberExpression(node:Token, context:any){
 		this.Visit(node.value, context);
 	}
 
-	private VisitMemberExpression(node:Token, context:any){
+	protected VisitMemberExpression(node:Token, context:any){
 		context.identifier = node.raw.replace(/\//g, '.');
 		this.Visit(node.value.value, context);
 	}
 
-	private VisitPropertyPathExpression(node:Token, context:any){
+	protected VisitPropertyPathExpression(node:Token, context:any){
 		this.Visit(node.value, context);
 	}
 
-	private VisitODataIdentifier(node:Token, context:any){
+	protected VisitODataIdentifier(node:Token, context:any){
 		context.identifier = context.identifier || node.value.name;
 	}
 
-	private VisitEqualsExpression(node:Token, context:any){
+	protected VisitEqualsExpression(node:Token, context:any){
 		this.Visit(node.value.left, context);
 		this.Visit(node.value.right, context);
 
@@ -148,7 +149,7 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitNotEqualsExpression(node:Token, context:any){
+	protected VisitNotEqualsExpression(node:Token, context:any){
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
@@ -157,7 +158,7 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitLesserThanExpression(node:Token, context:any){
+	protected VisitLesserThanExpression(node:Token, context:any){
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
@@ -166,7 +167,7 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitLesserOrEqualsExpression(node:Token, context:any){
+	protected VisitLesserOrEqualsExpression(node:Token, context:any){
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
@@ -175,7 +176,7 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitGreaterThanExpression(node:Token, context:any){
+	protected VisitGreaterThanExpression(node:Token, context:any){
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
@@ -184,7 +185,7 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitGreaterOrEqualsExpression(node:Token, context:any){
+	protected VisitGreaterOrEqualsExpression(node:Token, context:any){
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
@@ -193,84 +194,8 @@ export class Visitor{
 		delete context.literal;
 	}
 
-	private VisitLiteral(node:Token, context:any){
-		switch (node.value){
-			case 'Edm.String':
-				context.literal = decodeURIComponent(node.raw).slice(1, -1).replace(/''/g, "'");
-				break;
-				case 'Edm.Byte':
-			case 'Edm.SByte':
-			case 'Edm.Int16':
-			case 'Edm.Int32':
-			case 'Edm.Int64':
-				context.literal = +node.raw;
-				break;
-			case 'Edm.Decimal':
-			case 'Edm.Double':
-			case 'Edm.Single':
-				switch (node.raw){
-					case 'INF': context.literal = Infinity; break;
-					case '-INF': context.literal = -Infinity; break;
-					default: context.literal = +node.raw;
-				}
-				break;
-			case 'Edm.Boolean':
-				switch (node.raw.toLowerCase()){
-					case 'true': context.literal = true; break;
-					case 'false': context.literal = false; break;
-					default: context.literal = undefined;
-				}
-				break;
-			case 'Edm.Guid':
-				context.literal = decodeURIComponent(node.raw);
-				break;
-			case 'Edm.Date':
-				context.literal = node.raw;
-				break;
-			case 'Edm.DateTimeOffset':
-				context.literal = new Date(node.raw);
-				break;
-			case 'null':
-				context.literal = null;
-				break;
-			case 'Edm.TimeOfDay':
-				context.literal = new Date(`1970-01-01T${node.raw}Z`);
-				break;
-			case 'Edm.Duration':
-				var m = node.raw.match(/P([0-9]*D)?T?([0-9]{1,2}H)?([0-9]{1,2}M)?([\.0-9]*S)?/);
-				if (m){
-					var d = new Date(0);
-					for (var i = 1; i < m.length; i++){
-						switch (m[i].slice(-1)){
-							case 'D': d.setDate(parseInt(m[i])); continue;
-							case 'H': d.setHours(parseInt(m[i])); continue;
-							case 'M': d.setMinutes(parseInt(m[i])); continue;
-							case 'S': d.setSeconds(parseFloat(m[i])); continue;
-						}
-					}
-
-					context.literal = d.getTime();
-				}
-				break;
-			case 'Edm.GeographyCollection':
-			case 'Edm.GeographyLineString':
-			case 'Edm.GeographyMultiLineString':
-			case 'Edm.GeographyMultiPoint':
-			case 'Edm.GeographyMultiPolygon':
-			case 'Edm.GeographyPoint':
-			case 'Edm.GeographyPolygon':
-			case 'Edm.GeometryCollection':
-			case 'Edm.GeometryLineString':
-			case 'Edm.GeometryMultiLineString':
-			case 'Edm.GeometryMultiPoint':
-			case 'Edm.GeometryMultiPolygon':
-			case 'Edm.GeometryPoint':
-			case 'Edm.GeometryPolygon':
-			case 'Edm.Binary':
-				throw new Error('Not implemented');
-			default:
-				context.literal = node.raw;
-		}
+	protected VisitLiteral(node:Token, context:any){
+		context.literal = Literal.convert(node.value, node.raw);
 	}
 
 }

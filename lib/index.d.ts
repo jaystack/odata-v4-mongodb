@@ -6,13 +6,13 @@ export declare namespace infrastructure {
 }
 /**
  * Creates MongoDB collection, query, projection, sort, skip and limit from an OData URI string
- * @param {string} odataUri - An OData URI string
+ * @param {string} queryString - An OData query string
  * @return {Visitor} Visitor instance object with collection, query, projection, sort, skip and limit
  * @example
- * const query = createQuery("/Products?$filter=Size eq 4&$orderby=Orders&$skip=10&$top=5");
+ * const query = createQuery("$filter=Size eq 4&$orderby=Orders&$skip=10&$top=5");
  * collections[query.collection].find(query.query).project(query.projection).sort(query.sort).skip(query.skip).limit(query.limit).toArray(function(err, data){ ... });
  */
-export declare function createQuery(odataUri: string): Visitor;
+export declare function createQuery(queryString: string): Visitor;
 /**
  * Creates a MongoDB query object from an OData filter expression string
  * @param {string} odataFilter - A filter expression in OData $filter format
