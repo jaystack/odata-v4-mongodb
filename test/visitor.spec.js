@@ -2,14 +2,13 @@ var createFilter = require('../lib').createFilter
 var expect = require('chai').expect
 
 describe("mongodb visitor", () => {
-   var f
-   var e
+   var f;
   beforeEach(function() {
-    var match
+    var match;
      if (match = this.currentTest.title.match(/expression[^\:]*\:  ?(.*)/)) {
-       f = createFilter(match[1])
+       f = createFilter(match[1]);
      }
-  })
+  });
 
   //all numbers are referencing this:
   //http://docs.oasis-open.org/odata/odata/v4.0/errata02/os/complete/part2-url-conventions/odata-v4.0-errata02-os-part2-url-conventions-complete.html#_Toc406398116
@@ -94,4 +93,15 @@ describe("mongodb visitor", () => {
       expect(f).to.deep.eql({ $or: [{ 'A.b': 2 }, { $and: [{ 'B.c': { $lt: 4 } }, { $or: [{ E: { $gt: 5 } }, { E: { $lt: -1 } }] }] }] })
   })
 
+  it("expression 5.1.1.4.1: contains(A, 'BC')", () => {
+      expect(f).to.deep.eql({ A: /BC/gi });
+  })
+
+  it("expression 5.1.1.4.2: endswith(A, 'CD')", () => {
+      expect(f).to.deep.eql({ A: /CD$/gi });
+  })
+
+  it("expression 5.1.1.4.3: startswith(A, 'CD')", () => {
+      expect(f).to.deep.eql({ A: /^CD/gi });
+  })
 })

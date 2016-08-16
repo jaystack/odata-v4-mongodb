@@ -23,7 +23,9 @@ export class Visitor{
 		if (node){
 			var visitor = this[`Visit${node.type}`];
 			if (visitor) visitor.call(this, node, context);
-			else console.log(`Unhandled node type: ${node.type}`);
+			else{
+				console.log(`Unhandled node type: ${node.type}`, node);
+			}
 		}
 
 		return this;
@@ -128,16 +130,26 @@ export class Visitor{
 	}
 
 	protected VisitMemberExpression(node:Token, context:any){
-		context.identifier = node.raw.replace(/\//g, '.');
-		this.Visit(node.value.value, context);
-	}
-
-	protected VisitPropertyPathExpression(node:Token, context:any){
 		this.Visit(node.value, context);
 	}
 
+	protected VisitPropertyPathExpression(node:Token, context:any){
+		if (node.value.current && node.value.next){
+			this.Visit(node.value.current, context);
+			context.identifier += ".";
+			this.Visit(node.value.next, context);
+		}else this.Visit(node.value, context);
+	}
+
+	protected VisitSingleNavigationExpression(node:Token, context:any){
+		if (node.value.current && node.value.next){
+			this.Visit(node.value.current, context);
+			this.Visit(node.value.next, context);
+		}else this.Visit(node.value, context);
+	}
+
 	protected VisitODataIdentifier(node:Token, context:any){
-		context.identifier = context.identifier || node.value.name;
+		context.identifier = (context.identifier || "") + node.value.name;
 	}
 
 	protected VisitEqualsExpression(node:Token, context:any){
@@ -196,6 +208,22 @@ export class Visitor{
 
 	protected VisitLiteral(node:Token, context:any){
 		context.literal = Literal.convert(node.value, node.raw);
+	}
+
+	protected VisitMethodCallExpression(node:Token, context:any){
+		var method = node.value.method;
+		var params = (node.value.parameters || []).forEach(p => this.Visit(p, context));
+		switch (method){
+			case "contains":
+				context.query[context.identifier] = new RegExp(context.literal, "gi");
+				break;
+			case "endswith":
+				context.query[context.identifier] = new RegExp(context.literal + "$", "gi");
+				break;
+			case "startswith":
+				context.query[context.identifier] = new RegExp("^" + context.literal, "gi");
+				break;
+		}
 	}
 
 }

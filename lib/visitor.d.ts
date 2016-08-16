@@ -26,6 +26,7 @@ export declare class Visitor {
     protected VisitFirstMemberExpression(node: Token, context: any): void;
     protected VisitMemberExpression(node: Token, context: any): void;
     protected VisitPropertyPathExpression(node: Token, context: any): void;
+    protected VisitSingleNavigationExpression(node: Token, context: any): void;
     protected VisitODataIdentifier(node: Token, context: any): void;
     protected VisitEqualsExpression(node: Token, context: any): void;
     protected VisitNotEqualsExpression(node: Token, context: any): void;
@@ -34,4 +35,5 @@ export declare class Visitor {
     protected VisitGreaterThanExpression(node: Token, context: any): void;
     protected VisitGreaterOrEqualsExpression(node: Token, context: any): void;
     protected VisitLiteral(node: Token, context: any): void;
+    protected VisitMethodCallExpression(node: Token, context: any): void;
 }
