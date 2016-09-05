@@ -8,6 +8,7 @@ export class Visitor{
 	limit: number
 	projection: any
 	collection: string
+	inlinecount: boolean
 	ast:Token
 
 	constructor(){
@@ -51,6 +52,10 @@ export class Visitor{
 
 		this.sort = context.sort;
 		delete context.sort;
+	}
+
+	protected VisitInlineCount(node:Token, context:any){
+		this.inlinecount = Literal.convert(node.value.value, node.value.raw);
 	}
 
 	protected VisitFilter(node:Token, context:any){
