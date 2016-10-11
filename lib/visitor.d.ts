@@ -6,12 +6,17 @@ export declare class Visitor {
     limit: number;
     projection: any;
     collection: string;
+    navigationProperty: string;
+    includes: Visitor[];
     inlinecount: boolean;
     ast: Token;
     constructor();
     Visit(node: Token, context?: any): this;
     protected VisitODataUri(node: Token, context: any): void;
     protected VisitEntitySetName(node: Token, context: any): void;
+    protected VisitExpand(node: Token, context: any): void;
+    protected VisitExpandItem(node: Token, context: any): void;
+    protected VisitExpandPath(node: Token, context: any): void;
     protected VisitQueryOptions(node: Token, context: any): void;
     protected VisitInlineCount(node: Token, context: any): void;
     protected VisitFilter(node: Token, context: any): void;

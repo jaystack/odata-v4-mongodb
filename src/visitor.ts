@@ -8,6 +8,8 @@ export class Visitor{
 	limit: number
 	projection: any
 	collection: string
+	navigationProperty: string
+	includes:Visitor[]
 	inlinecount: boolean
 	ast:Token
 
@@ -15,6 +17,7 @@ export class Visitor{
 		this.query = {};
 		this.sort = {};
 		this.projection = {};
+		this.includes = [];
 	}
 
 	Visit(node:Token, context?:any){
@@ -40,6 +43,42 @@ export class Visitor{
 	protected VisitEntitySetName(node:Token, context:any){
 		this.collection = node.value.name;
 	}
+
+	protected VisitExpand(node: Token, context: any) {
+        var innerContexts:any = {};
+        node.value.items.forEach((item) => {
+            var expandPath = item.value.path.raw;
+            var innerVisitor = this.includes.filter(v => v.navigationProperty === expandPath)[0];
+            if (!innerVisitor){
+                innerVisitor = new Visitor();
+
+                innerContexts[expandPath] = {
+                    query: {},
+                    sort: {},
+                    projection: {},
+                    options: {}
+                };
+
+                this.includes.push(innerVisitor);
+            }
+
+            let innerContext:any = innerContexts[expandPath] || {};
+            innerVisitor.Visit(item, innerContext);
+
+            innerVisitor.query = innerContext.query || innerVisitor.query || {};
+            innerVisitor.sort = innerContext.sort || innerVisitor.sort;
+            innerVisitor.projection = innerContext.projection || innerVisitor.projection;
+        });
+    }
+
+    protected VisitExpandItem(node: Token, context: any) {
+        this.Visit(node.value.path, context);
+        node.value.options && node.value.options.forEach((item) => this.Visit(item, context));
+    }
+
+    protected VisitExpandPath(node: Token, context: any) {
+        this.navigationProperty = node.raw;
+    }
 
 	protected VisitQueryOptions(node:Token, context:any){
 		var self = this;
