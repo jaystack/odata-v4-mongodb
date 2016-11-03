@@ -13,6 +13,14 @@ describe("mongodb visitor", () => {
   //all numbers are referencing this:
   //http://docs.oasis-open.org/odata/odata/v4.0/errata02/os/complete/part2-url-conventions/odata-v4.0-errata02-os-part2-url-conventions-complete.html#_Toc406398116
 
+  it("expression: 1 eq 1", () => {
+      expect(f).to.deep.eql({})
+  })
+
+  it("expression: (1 eq 1) or (2 eq 2)", () => {
+      expect(f).to.deep.eql({})
+  })
+
   it("expression 5.1.1.6.1: NullValue eq null", () => {
       expect(f).to.deep.eql({ NullValue: null })
   })

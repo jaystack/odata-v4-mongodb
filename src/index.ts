@@ -29,7 +29,7 @@ export function createFilter(odataFilter:string);
 export function createFilter(odataFilter:Token);
 export function createFilter(odataFilter:string | Token):Object{
     let context = { query: {} };
-    let ast:Token = <Token>(typeof odataFilter == "string" ? query(<string>odataFilter) : odataFilter);
+    let ast:Token = <Token>(typeof odataFilter == "string" ? filter(<string>odataFilter) : odataFilter);
     new Visitor().Visit(ast, context);
     return context.query;
 }

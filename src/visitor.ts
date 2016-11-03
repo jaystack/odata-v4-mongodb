@@ -117,7 +117,7 @@ export class Visitor{
 
 	protected VisitOrderByItem(node:Token, context:any){
 		this.Visit(node.value.expr, context);
-		context.sort[context.identifier] = node.value.direction;
+		if (context.identifier) context.sort[context.identifier] = node.value.direction;
 		delete context.identifier;
 	}
 
@@ -143,7 +143,9 @@ export class Visitor{
 		context.query = rightQuery;
 		this.Visit(node.value.right, context);
 
-		query.$and = [leftQuery, rightQuery];
+		if (Object.keys(leftQuery).length > 0 && Object.keys(rightQuery).length > 0){
+			query.$and = [leftQuery, rightQuery];
+		}
 		context.query = query;
 	}
 
@@ -157,7 +159,9 @@ export class Visitor{
 		context.query = rightQuery;
 		this.Visit(node.value.right, context);
 
-		query.$or = [leftQuery, rightQuery];
+		if (Object.keys(leftQuery).length > 0 && Object.keys(rightQuery).length > 0){
+			query.$or = [leftQuery, rightQuery];
+		}
 		context.query = query;
 	}
 
@@ -180,7 +184,7 @@ export class Visitor{
 	protected VisitPropertyPathExpression(node:Token, context:any){
 		if (node.value.current && node.value.next){
 			this.Visit(node.value.current, context);
-			context.identifier += ".";
+			if (context.identifier) context.identifier += ".";
 			this.Visit(node.value.next, context);
 		}else this.Visit(node.value, context);
 	}
@@ -200,7 +204,7 @@ export class Visitor{
 		this.Visit(node.value.left, context);
 		this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = context.literal;
+		if (context.identifier) context.query[context.identifier] = context.literal;
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -209,7 +213,7 @@ export class Visitor{
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = { $ne: context.literal };
+		if (context.identifier) context.query[context.identifier] = { $ne: context.literal };
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -218,7 +222,7 @@ export class Visitor{
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = { $lt: context.literal };
+		if (context.identifier) context.query[context.identifier] = { $lt: context.literal };
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -227,7 +231,7 @@ export class Visitor{
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = { $lte: context.literal };
+		if (context.identifier) context.query[context.identifier] = { $lte: context.literal };
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -236,7 +240,7 @@ export class Visitor{
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = { $gt: context.literal };
+		if (context.identifier) context.query[context.identifier] = { $gt: context.literal };
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -245,7 +249,7 @@ export class Visitor{
 		var left = this.Visit(node.value.left, context);
 		var right = this.Visit(node.value.right, context);
 
-		context.query[context.identifier] = { $gte: context.literal };
+		if (context.identifier) context.query[context.identifier] = { $gte: context.literal };
 		delete context.identifier;
 		delete context.literal;
 	}
@@ -257,16 +261,18 @@ export class Visitor{
 	protected VisitMethodCallExpression(node:Token, context:any){
 		var method = node.value.method;
 		var params = (node.value.parameters || []).forEach(p => this.Visit(p, context));
-		switch (method){
-			case "contains":
-				context.query[context.identifier] = new RegExp(context.literal, "gi");
-				break;
-			case "endswith":
-				context.query[context.identifier] = new RegExp(context.literal + "$", "gi");
-				break;
-			case "startswith":
-				context.query[context.identifier] = new RegExp("^" + context.literal, "gi");
-				break;
+		if (context.identifier){
+			switch (method){
+				case "contains":
+					context.query[context.identifier] = new RegExp(context.literal, "gi");
+					break;
+				case "endswith":
+					context.query[context.identifier] = new RegExp(context.literal + "$", "gi");
+					break;
+				case "startswith":
+					context.query[context.identifier] = new RegExp("^" + context.literal, "gi");
+					break;
+			}
 		}
 	}
 
