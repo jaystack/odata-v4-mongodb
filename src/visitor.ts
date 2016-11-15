@@ -27,9 +27,6 @@ export class Visitor{
 		if (node){
 			var visitor = this[`Visit${node.type}`];
 			if (visitor) visitor.call(this, node, context);
-			else{
-				console.log(`Unhandled node type: ${node.type}`, node);
-			}
 		}
 
 		return this;
