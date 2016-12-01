@@ -18,6 +18,13 @@ export class Visitor{
 		this.sort = {};
 		this.projection = {};
 		this.includes = [];
+
+		let _ast;
+		Object.defineProperty(this, "ast", {
+			get: () => { return _ast; },
+			set: (v) => { _ast = v; },
+			enumerable: false
+		});
 	}
 
 	Visit(node:Token, context?:any){
@@ -97,6 +104,8 @@ export class Visitor{
 	protected VisitFilter(node:Token, context:any){
 		context.query = {};
 		this.Visit(node.value, context);
+		delete context.identifier;
+		delete context.literal;
 	}
 
 	protected VisitOrderBy(node:Token, context:any){
@@ -116,6 +125,7 @@ export class Visitor{
 		this.Visit(node.value.expr, context);
 		if (context.identifier) context.sort[context.identifier] = node.value.direction;
 		delete context.identifier;
+		delete context.literal;
 	}
 
 	protected VisitSelect(node:Token, context:any){

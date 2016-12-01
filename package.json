@@ -1,6 +1,6 @@
 {
   "name": "odata-v4-mongodb",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Service OData requests from a MongoDB data store",
   "main": "lib/index.js",
   "typings": "lib/index",
@@ -12,7 +12,8 @@
     "pretest": "npm run build",
     "test": "mocha",
     "pretdd": "npm run build",
-    "tdd": "mocha -w"
+    "tdd": "mocha -w",
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",
