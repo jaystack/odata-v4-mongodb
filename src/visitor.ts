@@ -207,6 +207,15 @@ export class Visitor{
 		context.identifier = (context.identifier || "") + node.value.name;
 	}
 
+	protected VisitNotExpression(node:Token, context:any){
+		this.Visit(node.value, context);
+		if (context.query){
+			for (var prop in context.query){
+				context.query[prop] = { $not: context.query[prop] };
+			}
+		}
+	}
+
 	protected VisitEqualsExpression(node:Token, context:any){
 		this.Visit(node.value.left, context);
 		this.Visit(node.value.right, context);

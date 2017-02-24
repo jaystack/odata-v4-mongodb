@@ -112,4 +112,8 @@ describe("mongodb visitor", () => {
   it("expression 5.1.1.4.3: startswith(A, 'CD')", () => {
       expect(f).to.deep.eql({ A: /^CD/gi });
   })
+
+  it("expression 5.1.1.1.11: not endswith(Name,'ilk')", () => {
+      expect(f).to.deep.eql({ Name: { $not: /ilk$/gi } });
+  })
 })
