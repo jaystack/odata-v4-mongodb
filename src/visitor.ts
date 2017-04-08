@@ -289,8 +289,8 @@ export class Visitor{
 					context.query[context.identifier] = new RegExp("^" + context.literal, "gi");
 					break;
 			}
+			delete context.identifier;
 		}
-		delete context.identifier;
 	}
 
 }
