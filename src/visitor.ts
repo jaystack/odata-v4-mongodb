@@ -290,6 +290,7 @@ export class Visitor{
 					break;
 			}
 		}
+		delete context.identifier;
 	}
 
 }
