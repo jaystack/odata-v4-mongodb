@@ -105,6 +105,10 @@ describe("mongodb visitor", () => {
       expect(f).to.deep.eql({ A: /BC/gi });
   })
 
+  it("expression 5.1.1.4.1: contains(A, 'BC') or contains(D, 'EF')", () => {
+      expect(f).to.deep.eql({ $or: [{ A: /BC/gi }, { D: /EF/gi }]});
+  })
+
   it("expression 5.1.1.4.2: endswith(A, 'CD')", () => {
       expect(f).to.deep.eql({ A: /CD$/gi });
   })
