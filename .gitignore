@@ -35,3 +35,4 @@ node_modules
 .vscode
 lib
 report/
+test-results.xml

@@ -11,7 +11,7 @@
     "build": "tsc src/index.ts --outDir lib -d",
     "pretest": "npm run build",
     "test": "mocha",
-    "test:jenkins": "npm run build && mocha test --recursive ./test/**/*.spec.js --reporter mocha-junit-reporter --reporter-options mochaFile=./report/results.xml",
+    "test:jenkins": "npm run build && mocha test --recursive ./test/**/*.spec.js --reporter mocha-junit-reporter",
     "pretdd": "npm run build",
     "tdd": "mocha -w",
     "prepublish": "npm test"
