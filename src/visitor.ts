@@ -274,11 +274,11 @@ export class Visitor{
 		context.literal = Literal.convert(node.value, node.raw);
 	}
 
-	protected VisitMethodCallExpression(node:Token, context:any){
+	protected VisitMethodCallExpression(node: Token, context: any) {
 		var method = node.value.method;
 		var params = (node.value.parameters || []).forEach(p => this.Visit(p, context));
-		if (context.identifier){
-			switch (method){
+		if (context.identifier) {
+			switch (method) {
 				case "contains":
 					context.query[context.identifier] = new RegExp(context.literal, "gi");
 					break;
@@ -288,6 +288,8 @@ export class Visitor{
 				case "startswith":
 					context.query[context.identifier] = new RegExp("^" + context.literal, "gi");
 					break;
+				default:
+					throw new Error("Method call not implemented.")
 			}
 			delete context.identifier;
 		}
